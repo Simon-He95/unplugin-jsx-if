@@ -1,4 +1,4 @@
-## vite-plugin-jsx-sugar-if
+## unplugin-jsx-if
 
 在 react 项目中使用 vue 的 v-if 语法 🍬
 
