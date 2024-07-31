@@ -7,8 +7,9 @@
     "resolveJsonModule": true,
     "strict": true,
     "strictNullChecks": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
-  "include": ["src", "playground"],
-  "exclude": ["dist", "eslint.config.js"]
+  "include": ["src"],
+  "exclude": ["dist", "eslint.config.js", "node_modules"]
 }
