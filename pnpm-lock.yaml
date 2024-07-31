@@ -88,10 +88,10 @@ importers:
   playground:
     dependencies:
       react:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       react-router-dom:
         specifier: ^6.25.1
@@ -104,52 +104,52 @@ importers:
         specifier: ^7.25.0
         version: 7.25.0
       '@babel/types':
-        specifier: ^7.25.0
+        specifier: ^7.25.2
         version: 7.25.2
       '@types/react':
-        specifier: ^18.2.56
+        specifier: ^18.3.3
         version: 18.3.3
       '@types/react-dom':
-        specifier: ^18.2.19
+        specifier: ^18.3.0
         version: 18.3.0
       '@typescript-eslint/eslint-plugin':
-        specifier: ^7.0.2
+        specifier: ^7.18.0
         version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/parser':
-        specifier: ^7.0.2
+        specifier: ^7.18.0
         version: 7.18.0(eslint@8.57.0)(typescript@5.5.4)
       '@vitejs/plugin-react':
-        specifier: ^4.2.1
+        specifier: ^4.3.1
         version: 4.3.1(vite@5.3.5(@types/node@18.19.42)(terser@5.31.3))
       autoprefixer:
-        specifier: ^10
+        specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.40)
       eslint:
-        specifier: ^8.56.0
+        specifier: ^8.57.0
         version: 8.57.0
       eslint-plugin-react-hooks:
-        specifier: ^4.6.0
+        specifier: ^4.6.2
         version: 4.6.2(eslint@8.57.0)
       eslint-plugin-react-refresh:
-        specifier: ^0.4.5
+        specifier: ^0.4.9
         version: 0.4.9(eslint@8.57.0)
       path-to-regexp:
-        specifier: ^6.2.1
+        specifier: ^6.2.2
         version: 6.2.2
       postcss:
-        specifier: ^8
+        specifier: ^8.4.40
         version: 8.4.40
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
       tailwindcss:
-        specifier: ^3.4.1
+        specifier: ^3.4.7
         version: 3.4.7
       typescript:
-        specifier: ^5.2.2
+        specifier: ^5.5.4
         version: 5.5.4
       vite:
-        specifier: ^5.1.4
+        specifier: ^5.3.5
         version: 5.3.5(@types/node@18.19.42)(terser@5.31.3)
 
 packages:
@@ -6501,7 +6501,7 @@ snapshots:
       postcss-js: 4.0.1(postcss@8.4.40)
       postcss-load-config: 4.0.2(postcss@8.4.40)
       postcss-nested: 6.2.0(postcss@8.4.40)
-      postcss-selector-parser: 6.0.15
+      postcss-selector-parser: 6.1.1
       resolve: 1.22.8
       sucrase: 3.35.0
     transitivePeerDependencies:

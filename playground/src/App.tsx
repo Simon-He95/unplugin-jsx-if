@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 
-import Test from './pages/test'
+import Test from './pages'
 
 function App() {
   return (
