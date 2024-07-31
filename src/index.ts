@@ -1,7 +1,7 @@
 import type { JSXAttribute } from '@babel/types'
 import type { ParserOptions } from '@babel/parser'
 import { parse } from '@babel/parser'
-import { isJSXAttribute, isJSXText, traverse } from '@babel/types'
+import { isJSXAttribute, isJSXElement, traverse } from '@babel/types'
 import { createUnplugin } from 'unplugin'
 import type { UnpluginFactory } from 'unplugin'
 import type { Options } from './types'
@@ -18,6 +18,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
     transform(code: string) {
       try {
         const ast = parserJSX(code) as any
+        const updateList: [string, string][] = []
         traverse(ast, {
           enter(node: any, parentNodes: any) {
             if (node.type !== 'JSXElement')
@@ -28,28 +29,18 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
               ) as JSXAttribute
               if (!vIf || !vIf.value)
                 return
-              const siblings = (
-                parentNodes.slice(-1)[0]?.node as any
-              ).children.filter((i: any) => !isJSXText(i) || i.value.trim())
+              const parentNode = parentNodes.slice(-1)[0]?.node as any
+              const siblings = (parentNode).children.filter((i: any) => isJSXElement(i))
               const vIfExpression = code.slice(
                 vIf.value.loc!.start.index + 1,
                 vIf.value.loc!.end.index - 1,
               )
-              const vIfGroup = code.slice(
-                vIf.loc?.start.index,
-                vIf.loc?.end.index,
-              )
-              const nodeContent = code
-                .slice(node.loc?.start.index, node.loc?.end.index)
-                .replace(vIfGroup, '')
+
+              const nodeContent = code.slice(node.loc?.start.index, vIf.loc?.start.index) + code.slice(vIf.loc?.end.index, node.loc?.end.index)
               const vIfLists = [[vIfExpression, nodeContent, node]]
               if (!siblings) {
-                code = `${code.slice(
-                  0,
-                  node.loc?.start.index,
-                )}{${vIfExpression} ? ${nodeContent} : null}${code.slice(
-                  node.loc?.end.index,
-                )}`
+                const replacer = `{${vIfExpression} ? ${nodeContent} : null}`
+                updateList.push([nodeContent, replacer])
               }
               else {
                 const currentIndex = siblings.findIndex(
@@ -74,16 +65,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
                         nextSiblingVElseIf.value.loc!.end.index - 1,
                       )
                       : ''
-                    const vIfGroup = code.slice(
-                      nextSiblingVElseIf.loc?.start.index,
-                      nextSiblingVElseIf.loc?.end.index,
-                    )
-                    const nodeContent = code
-                      .slice(
-                        nextSibling.loc?.start.index,
-                        nextSibling.loc?.end.index,
-                      )
-                      .replace(vIfGroup, '')
+                    const nodeContent = code.slice(nextSibling.loc?.start.index, nextSiblingVElseIf.loc?.start.index) + code.slice(nextSiblingVElseIf.loc?.end.index, nextSibling.loc?.end.index)
                     vIfLists.push([vIfExpression, nodeContent, nextSibling])
                   }
                   else {
@@ -91,22 +73,22 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
                   }
                 }
                 // 将第一个开始和最后一个结束转换成 三元表达式
-                const [firstExpression, firstNodeContent] = vIfLists.shift()!
-                const [_, lastNodeContent, lastNode] = vIfLists.pop()!
+                const [firstExpression, firstNodeContent, firstNode] = vIfLists.shift()!
+                // eslint-disable-next-line ts/no-non-null-asserted-optional-chain
+                const [_, lastNodeContent, lastNode] = vIfLists?.pop()! || []
                 let ternaryExpression = `{${firstExpression} ? ${firstNodeContent}`
                 for (const [vIfExpression, nodeContent] of vIfLists)
                   ternaryExpression += ` : ${vIfExpression} ? ${nodeContent}`
 
-                ternaryExpression += ` : ${lastNodeContent}}`
-                code
-                  = code.slice(0, node.loc?.start.index)
-                  + ternaryExpression
-                  + code.slice((lastNode as any).loc?.end.index)
+                ternaryExpression += ` : ${lastNodeContent || 'null'}}`
+                const nodeContent = code
+                  .slice(firstNode.loc?.start.index, lastNode ? lastNode.loc.end.index : firstNode.loc?.end.index)
+                updateList.push([nodeContent, ternaryExpression])
               }
             }
           },
         })
-        return code
+        return updateList.reduce((result, [origin, replacer]) => result.replace(origin, replacer), code)
       }
       catch (error) {
         console.error(error)
